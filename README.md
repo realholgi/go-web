@@ -1,8 +1,9 @@
 # go-web
 
 `go-web` provides small HTTP server helpers: a standard server configuration,
-request logging and panic recovery middleware, Windows service support, and
-same-origin protection for state-changing routes.
+request logging and panic recovery middleware, Windows service support,
+same-origin protection for state-changing routes, and embedded shared HTML
+template rendering.
 
 ## Installation
 
@@ -45,6 +46,27 @@ service manager and uses `go-web-example` as the service name when applicable.
 requires a matching `Origin` or `Referer` header, returning 403 otherwise. It
 honors `X-Forwarded-Proto` for TLS-terminating proxies; only trust that header
 when the proxy removes values supplied by clients.
+
+## Shared templates
+
+`render.New` embeds the shared `render/base.html`. Applications provide their
+page templates plus `templates/chrome.html`, which defines `home_url`,
+`navigation`, `navbar_right`, and `app_styles`. The renderer parses those files
+for each page and supplies application-relative URLs through `url`.
+
+```go
+renderer := render.New(templateFS, render.Config{
+    BasePath: basepath.New("/app", false),
+    Funcs: template.FuncMap{
+        "appTitle":         func() string { return "Example" },
+        "companyName":      func() string { return "Example GmbH" },
+        "brandColor":       func() string { return "#123456" },
+        "brandColorHover":  func() string { return "#0d47a1" },
+        "changelogTrigger": func() template.HTML { return "" },
+        "changelogModal":   func() template.HTML { return "" },
+    },
+})
+```
 
 ## License
 
