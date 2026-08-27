@@ -69,12 +69,13 @@ renderer := render.New(templateFS, render.Config{
 ```
 
 Assets below `render/static` are embedded in the package and served by
-`render.StaticHandler`. Applications mount it separately from app-owned assets:
+`render.StaticHandler` below `/static/shared/`. It also serves app-owned assets
+from the `static` directory of the supplied filesystem:
 
 ```go
 mux.Handle(
-    "GET /static/shared/",
-    http.StripPrefix("/static/shared/", render.StaticHandler()),
+    "GET /static/",
+    http.StripPrefix("/static/", render.StaticHandler(appFS)),
 )
 ```
 
