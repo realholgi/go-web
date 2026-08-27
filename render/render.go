@@ -3,6 +3,7 @@ package render
 
 import (
 	"bytes"
+	"embed"
 	"html/template"
 	"io/fs"
 	"log"
@@ -11,6 +12,9 @@ import (
 
 	"github.com/realholgi/go-web/basepath"
 )
+
+//go:embed base.html
+var baseFS embed.FS
 
 // Config configures a Renderer. Funcs are available while templates are parsed.
 // RequestFuncs may replace those functions for an individual response.
@@ -29,7 +33,7 @@ type Renderer struct {
 	templateCache sync.Map
 }
 
-// New creates a renderer for templates rooted at templates/base.html.
+// New creates a renderer for application templates rooted at templates/chrome.html.
 func New(templateFS fs.FS, cfg Config) *Renderer {
 	return &Renderer{
 		templateFS:   templateFS,
@@ -54,7 +58,7 @@ func (r *Renderer) Redirect(w http.ResponseWriter, req *http.Request, target str
 	r.basePath.Redirect(w, req, target, code)
 }
 
-// Render renders name using templates/base.html and templates/name.
+// Render renders name using the shared base template, templates/chrome.html, and templates/name.
 func (r *Renderer) Render(w http.ResponseWriter, name string, data any) {
 	cachedValue, ok := r.templateCache.Load(name)
 	if !ok {
@@ -90,7 +94,11 @@ func (r *Renderer) Render(w http.ResponseWriter, name string, data any) {
 }
 
 func parseTemplate(funcs template.FuncMap, templateFS fs.FS, name string) (*template.Template, error) {
-	return template.New("").Funcs(funcs).ParseFS(templateFS, "templates/base.html", "templates/"+name)
+	parsed, err := template.New("").Funcs(funcs).ParseFS(baseFS, "base.html")
+	if err != nil {
+		return nil, err
+	}
+	return parsed.ParseFS(templateFS, "templates/chrome.html", "templates/"+name)
 }
 
 func cloneFuncs(source template.FuncMap) template.FuncMap {

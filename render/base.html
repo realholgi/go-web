@@ -1,0 +1,66 @@
+{{define "layout"}}<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{block "title" .}}{{appTitle}}{{end}}</title>
+<link href="{{url "/static/vendor/bootstrap/bootstrap.min.css"}}" rel="stylesheet">
+<style>
+:root { --brand: {{brandColor}}; }
+body { padding-top: 52px; }
+.navbar { height: 52px; background-color: var(--brand) !important; }
+.navbar-brand span { font-weight: 600; white-space: nowrap; }
+.navbar-nav .nav-link { padding-top: .3rem; padding-bottom: .3rem; }
+.navbar-nav .nav-link.active { color: #fff !important; font-weight: 600; }
+.navbar-nav .nav-link:not(.active) { opacity: .75; }
+.app-version { font-size: .75rem; opacity: .6; letter-spacing: .04em; }
+thead.table-dark th { background-color: var(--brand); }
+.btn-primary, .btn-success { background-color: var(--brand); border-color: var(--brand); color: #fff; }
+.btn-primary:hover, .btn-primary:focus,
+.btn-success:hover, .btn-success:focus { background-color: {{brandColorHover}}; border-color: {{brandColorHover}}; color: #fff; }
+.btn-outline-primary, .btn-outline-secondary { color: var(--brand); border-color: var(--brand); }
+.btn-outline-primary:hover, .btn-outline-primary:focus,
+.btn-outline-secondary:hover, .btn-outline-secondary:focus { background-color: var(--brand); border-color: var(--brand); color: #fff; }
+@media print {
+  body { padding-top: 0; }
+  .navbar, .no-print, form.no-print, a.btn, button { display: none !important; }
+  .sort-icon { display: none; }
+  table { font-size: 11pt; }
+}
+{{template "app_styles" .}}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand navbar-dark fixed-top px-3 no-print">
+  <a class="navbar-brand p-0 d-flex align-items-center gap-2" href="{{template "home_url" .}}">
+    <img src="{{url "/static/logo.png"}}" alt="{{companyName}}" style="height:32px;">
+    <span>{{appTitle}}</span>
+  </a>
+  <ul class="navbar-nav ms-3">
+    {{template "navigation" .}}
+  </ul>
+  <ul class="navbar-nav ms-auto align-items-center">
+    {{template "navbar_right" .}}
+    <li class="nav-item d-flex align-items-center text-white app-version">
+      {{changelogTrigger}}
+    </li>
+  </ul>
+</nav>
+<div class="container-xl py-3">
+{{block "content" .}}{{end}}
+</div>
+<script src="{{url "/static/vendor/bootstrap/bootstrap.bundle.min.js"}}"></script>
+{{changelogModal}}
+<script>
+(function () {
+  var path = location.pathname.replace(/\/+$/, '');
+  document.querySelectorAll('.navbar-nav .nav-link').forEach(function (a) {
+    var href = a.getAttribute('href').replace(/\/+$/, '');
+    var active = href === path || (a.dataset.exact !== '1' && href !== '' && path.startsWith(href + '/'));
+    if (active) a.classList.add('active');
+  });
+}());
+</script>
+</body>
+</html>{{end}}
+{{define "base"}}{{template "layout" .}}{{end}}
