@@ -55,13 +55,13 @@ func TestRenderUsesSharedBaseAndApplicationChrome(t *testing.T) {
 	for _, want := range []string{
 		`<title>Items</title>`,
 		`<a class="navbar-brand p-0 d-flex align-items-center gap-2" href="/app">`,
-		`<link href="/app/static/vendor/bootstrap/bootstrap.min.css" rel="stylesheet">`,
+		`<link href="/app/static/shared/bootstrap/bootstrap.min.css" rel="stylesheet">`,
 		`alt="Example GmbH"`,
 		`<a class="nav-link" href="/app/items">Items</a>`,
 		`<li class="nav-item">Example GmbH</li>`,
 		`.custom { color: red; }`,
 		`<main>/app/items Example</main>`,
-		`<script src="/app/static/vendor/bootstrap/bootstrap.bundle.min.js">`,
+		`<script src="/app/static/shared/bootstrap/bootstrap.bundle.min.js">`,
 		`<button type="button" data-changelog-trigger="1">v1</button>`,
 	} {
 		if !strings.Contains(body, want) {
