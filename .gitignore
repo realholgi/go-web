@@ -1,0 +1,11 @@
+# Build outputs
+/go-web
+*.exe
+*.test
+*.out
+
+# Coverage reports
+coverage.out
+
+# macOS metadata
+.DS_Store
