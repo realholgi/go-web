@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/realholgi/go-web/httpserver"
@@ -17,7 +18,8 @@ func main() {
 }
 
 func home(w http.ResponseWriter, _ *http.Request) {
-	_, _ = w.Write([]byte("Hello, world!\n"))
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	_, _ = fmt.Fprintln(w, "go-web example is running")
 }
 
 func updateSettings(w http.ResponseWriter, _ *http.Request) {
