@@ -144,6 +144,11 @@ app.Handle(
 `appFS` must contain a `static` directory. Application files take precedence
 over the shared assets embedded below `render/static`.
 
+## Dependencies
+
+The Go module uses `golang.org/x/sys v0.49.0` for Windows service support.
+Shared static assets vendor Bootstrap `5.3.8`, including its bundled JavaScript.
+
 ## License
 
 MIT
